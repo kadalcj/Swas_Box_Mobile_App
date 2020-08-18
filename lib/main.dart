@@ -1,6 +1,6 @@
-import 'package:bank_sampah_mobile/screen/landing_page.dart';
 import 'package:flutter/material.dart';
 
+import 'package:bank_sampah_mobile/config/router/route_generator.dart';
 
 void main() {
   runApp(App());
@@ -10,7 +10,11 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LandingPage(),
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      initialRoute: '/',
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
