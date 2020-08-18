@@ -20,10 +20,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (event is PostLogin) {
       try {
         yield LoginIsLoading(event._email, event._password);
+<<<<<<< HEAD
         final user =
             await _userRepository.postLogin(event._email, event._password);
 
         yield LoginIsLoaded(user);
+=======
+        final _user =
+            await _userRepository.postLogin(event._email, event._password);
+
+        yield LoginIsLoaded(_user);
+>>>>>>> a734c6c034472724fe0f0deff844e6101da1ce11
       } catch (_) {
         yield LoginError('Email atau Password Tidak Sesuai');
       }

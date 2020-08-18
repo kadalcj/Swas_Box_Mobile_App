@@ -140,7 +140,10 @@ class LoginPage extends StatelessWidget {
                   labelText: 'Email',
                   hintText: 'contoh@mail.com',
                 ),
+<<<<<<< HEAD
                 keyboardType: TextInputType.emailAddress,
+=======
+>>>>>>> a734c6c034472724fe0f0deff844e6101da1ce11
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (v) {
                   FocusScope.of(context).requestFocus(_focus);
@@ -164,7 +167,10 @@ class LoginPage extends StatelessWidget {
                   border: OutlineInputBorder(),
                   labelText: 'Password',
                 ),
+<<<<<<< HEAD
                 obscureText: true,
+=======
+>>>>>>> a734c6c034472724fe0f0deff844e6101da1ce11
                 focusNode: _focus,
                 textInputAction: TextInputAction.done,
                 validator: (value) {
@@ -204,9 +210,13 @@ class LoginPage extends StatelessWidget {
                   if (_formKey.currentState.validate()) {
                     context.bloc<LoginBloc>().add(
                           PostLogin(
+<<<<<<< HEAD
                             _emailController.text,
                             _passwordController.text,
                           ),
+=======
+                              _emailController.text, _passwordController.text),
+>>>>>>> a734c6c034472724fe0f0deff844e6101da1ce11
                         );
                   }
                 },
