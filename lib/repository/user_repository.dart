@@ -10,7 +10,7 @@ class UserRepository {
   Future<User> postLogin(String email, String password) async {
     Map<String, dynamic> body = {
       'email': email,
-      'password': password
+      'password': password,
     };
 
     final response = await http.Client().post(
@@ -22,6 +22,32 @@ class UserRepository {
     );
 
     if (response.statusCode != 200) {
+      throw Exception();
+    }
+
+    return parsedJson(response.body);
+  }
+
+  // Register
+  Future<User> postRegister(String firstName, String lastName, String contact,
+      String email, String password) async {
+    Map<String, dynamic> body = {
+      'firstName': firstName,
+      'lastName': lastName,
+      'contact': contact,
+      'email': email,
+      'password': password,
+    };
+
+    final response = await http.Client().post(
+      Uri.encodeFull(uri + 'register'),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: body,
+    );
+
+    if (response.statusCode != 201) {
       throw Exception();
     }
 

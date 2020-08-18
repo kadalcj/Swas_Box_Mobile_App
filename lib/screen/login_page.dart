@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bank_sampah_mobile/bloc/login/login_bloc.dart';
 import 'package:bank_sampah_mobile/repository/user_repository.dart';
 
+import 'package:bank_sampah_mobile/screen/widget/title_container.dart';
+import 'package:bank_sampah_mobile/screen/widget/circular_container.dart';
+
 class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final _focus = FocusNode();
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -22,6 +24,7 @@ class LoginPage extends StatelessWidget {
         }
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: BlocProvider(
           create: (context) => LoginBloc(UserRepository()),
           child: SafeArea(
@@ -30,10 +33,6 @@ class LoginPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                   horizontal: 20.0,
                   vertical: 10.0,
-                ),
-                height: MediaQuery.of(context).size.height,
-                decoration: BoxDecoration(
-                  color: Colors.white,
                 ),
                 child: BlocConsumer<LoginBloc, LoginState>(
                   listener: (context, state) {
@@ -55,7 +54,7 @@ class LoginPage extends StatelessWidget {
                     if (state is LoginInitial) {
                       return _initialPage(context);
                     } else if (state is LoginIsLoading) {
-                      return _circularProgress();
+                      return CircularContainer(title: 'Mohon Tunggu');
                     }
 
                     return _initialPage(context);
@@ -73,53 +72,10 @@ class LoginPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _titleContainer(),
+        TitleContainer(),
         _formContainer(context),
         _registerContainer(context),
       ],
-    );
-  }
-
-  Widget _titleContainer() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 20.0,
-          ),
-          Text(
-            'Ayo Mulai',
-            style: TextStyle(
-              fontSize: 38.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          Text(
-            'Mari Memulai Kebiasaan Baik Sejak Dini',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          SizedBox(
-            height: 2.0,
-          ),
-          Text(
-            'Dengan Cara Menabung Sampah',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          SizedBox(
-            height: 12.0,
-          ),
-        ],
-      ),
     );
   }
 
@@ -140,14 +96,9 @@ class LoginPage extends StatelessWidget {
                   labelText: 'Email',
                   hintText: 'contoh@mail.com',
                 ),
-<<<<<<< HEAD
                 keyboardType: TextInputType.emailAddress,
-=======
->>>>>>> a734c6c034472724fe0f0deff844e6101da1ce11
                 textInputAction: TextInputAction.next,
-                onFieldSubmitted: (v) {
-                  FocusScope.of(context).requestFocus(_focus);
-                },
+                onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Data Ini Tidak Boleh Kosong';
@@ -167,12 +118,9 @@ class LoginPage extends StatelessWidget {
                   border: OutlineInputBorder(),
                   labelText: 'Password',
                 ),
-<<<<<<< HEAD
                 obscureText: true,
-=======
->>>>>>> a734c6c034472724fe0f0deff844e6101da1ce11
-                focusNode: _focus,
                 textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Data Ini Tidak Boleh Kosong';
@@ -210,13 +158,9 @@ class LoginPage extends StatelessWidget {
                   if (_formKey.currentState.validate()) {
                     context.bloc<LoginBloc>().add(
                           PostLogin(
-<<<<<<< HEAD
                             _emailController.text,
                             _passwordController.text,
                           ),
-=======
-                              _emailController.text, _passwordController.text),
->>>>>>> a734c6c034472724fe0f0deff844e6101da1ce11
                         );
                   }
                 },
@@ -275,27 +219,6 @@ class LoginPage extends StatelessWidget {
                 '/register',
               );
             },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _circularProgress() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(
-            height: 20.0,
-          ),
-          Text(
-            'Mohon Tunggu',
-            style: TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-            ),
           ),
         ],
       ),
