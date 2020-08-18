@@ -11,14 +11,14 @@ class LandingPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            _titleContainer(),
+            _titleContainer(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _titleContainer() {
+  Widget _titleContainer(BuildContext context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -78,7 +78,9 @@ class LandingPage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, '/login');
+            },
           ),
         ],
       ),
