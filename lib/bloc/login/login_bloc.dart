@@ -23,6 +23,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         final user =
             await _userRepository.postLogin(event._email, event._password);
 
+        // TODO: Save the response to Shared Preferences
+
         yield LoginIsLoaded(user);
       } catch (_) {
         yield LoginError('Email atau Password Tidak Sesuai');
