@@ -24,8 +24,9 @@ class UserRepository {
     if (response.statusCode != 200) {
       throw Exception();
     }
+    final user = json.decode(response.body);
 
-    return parsedJson(response.body);
+    return User.fromJson(user);
   }
 
   // Register
@@ -51,14 +52,14 @@ class UserRepository {
       throw Exception();
     }
 
-    return parsedJson(response.body);
+    return User.fromJson(json.decode(response.body.toString()));
   }
 
   // Parsing Response to Json
-  User parsedJson(final response) {
-    final jsonDecoded = json.decode(response);
-    final jsonUser = jsonDecoded['data'];
+  // User parsedJson(final response) {
+  //   final jsonDecoded = json.decode(response);
+  //   final jsonUser = jsonDecoded['data'];
 
-    return User.fromJson(jsonUser);
-  }
+  //   return User.fromJson(jsonUser);
+  // }
 }

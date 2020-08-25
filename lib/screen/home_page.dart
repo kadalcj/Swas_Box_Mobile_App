@@ -1,9 +1,32 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String _firstName;
+  int _poin;
+
+  Future _initPrefs() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      this._firstName = _prefs.getString('firstName');
+      this._poin = _prefs.getInt('poin');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _initPrefs();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,12 +42,12 @@ class HomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _welcomeContainer('Ilham Wahyu'),
+                _welcomeContainer(_firstName),
                 _poinContainer(
                   context,
-                  '69',
+                  _poin.toString(),
                 ),
-                _myActivityContainer()
+                _allertCovContainer()
               ],
             ),
           ),
@@ -159,6 +182,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     'assets/qr_code_icon.svg',
+                    color: Colors.white,
                   ),
                   Text(
                     'Scan',
@@ -171,8 +195,7 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             ),
-            onTap: () {
-              // TODO: Open QR Code Scanner and pushNamed to '/saving'
+            onTap: () async {
               Navigator.pushNamed(context, '/saving');
             },
           ),
@@ -191,18 +214,119 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _myActivityContainer() {
+  Widget _allertCovContainer() {
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: 20.0,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'My Activity',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
+          Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 15.0,
+              vertical: 20.0,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              color: Colors.grey[100],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Himbauan Covid - 19',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Text(
+                  'Ayo Cegah Penularan Covid - 19 Dengan Cara Patuhi Protokol Kesehatan.',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                  textAlign: TextAlign.justify,
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Text(
+                  '1. Menggunakan Masker',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 200.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Colors.green,
+                  ),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Text(
+                  '2. Mencuci Tangan Menggunakan Sabun',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 200.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Colors.green,
+                  ),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Text(
+                  '3. Menjaga Jarak',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 200.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Colors.green,
+                  ),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Center(
+                  child: Text(
+                    'Salam Sehat Dan Semangat',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

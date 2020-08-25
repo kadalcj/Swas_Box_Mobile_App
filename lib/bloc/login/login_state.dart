@@ -20,12 +20,12 @@ class LoginIsLoading extends LoginState {
 }
 
 class LoginIsLoaded extends LoginState {
-  final User _user;
+  final User user;
 
-  LoginIsLoaded(this._user);
+  LoginIsLoaded(this.user);
 
   @override
-  List<Object> get props => [_user];
+  List<Object> get props => [user];
 }
 
 class LoginError extends LoginState {

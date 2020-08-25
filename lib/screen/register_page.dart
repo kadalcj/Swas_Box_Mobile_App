@@ -7,7 +7,12 @@ import 'package:bank_sampah_mobile/repository/user_repository.dart';
 import 'package:bank_sampah_mobile/screen/widget/title_container.dart';
 import 'package:bank_sampah_mobile/screen/widget/circular_container.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
 
   final _firstNameController = TextEditingController();
@@ -285,7 +290,6 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  // Email RegEx
   bool validateEmail(String value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -294,5 +298,16 @@ class RegisterPage extends StatelessWidget {
       return false;
     else
       return true;
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _contactController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    
+    super.dispose();
   }
 }

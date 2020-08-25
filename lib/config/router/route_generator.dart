@@ -1,3 +1,4 @@
+import 'package:bank_sampah_mobile/screen/redeem_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bank_sampah_mobile/screen/landing_page.dart';
@@ -21,8 +22,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => HomePage());
       case '/saving':
         return MaterialPageRoute(builder: (_) => SavingPage());
-        case '/savingDetail':
+      case '/savingDetail':
         return MaterialPageRoute(builder: (_) => SavingDetailPage());
+      case '/redeem':
+        return MaterialPageRoute(builder: (_) => RedeemPage());
       default:
         return _errorRoute();
     }

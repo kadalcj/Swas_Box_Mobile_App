@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LandingPage extends StatelessWidget {
+  void _delSharedPrefs() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+    _prefs.remove('_id');
+    _prefs.remove('firstName');
+    _prefs.remove('poin');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +46,7 @@ class LandingPage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(bottom: 4.0),
             child: Text(
-              'SWAKIMAN BOX',
+              "SWA'S BOX",
               style: TextStyle(
                 fontSize: 28.0,
                 fontWeight: FontWeight.bold,
@@ -79,6 +88,7 @@ class LandingPage extends StatelessWidget {
               ),
             ),
             onTap: () {
+              _delSharedPrefs();
               Navigator.pushNamed(context, '/login');
             },
           ),
