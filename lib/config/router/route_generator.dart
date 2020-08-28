@@ -1,3 +1,4 @@
+import 'package:bank_sampah_mobile/screen/redeem_confirmation_page.dart';
 import 'package:bank_sampah_mobile/screen/redeem_page.dart';
 import 'package:flutter/material.dart';
 
@@ -13,25 +14,32 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => LandingPage());
+        return MaterialPageRoute(builder: (context) => LandingPage());
       case '/login':
-        return MaterialPageRoute(builder: (_) => LoginPage());
+        return MaterialPageRoute(builder: (context) => LoginPage());
       case '/register':
-        return MaterialPageRoute(builder: (_) => RegisterPage());
+        return MaterialPageRoute(builder: (context) => RegisterPage());
       case '/home':
-        return MaterialPageRoute(builder: (_) => HomePage());
+        return MaterialPageRoute(builder: (context) => HomePage());
       case '/saving':
-        return MaterialPageRoute(builder: (_) => SavingPage());
+        return MaterialPageRoute(builder: (context) => SavingPage());
       case '/savingDetail':
-        return MaterialPageRoute(builder: (_) => SavingDetailPage());
+        return MaterialPageRoute(builder: (context) => SavingDetailPage());
       case '/redeem':
-        return MaterialPageRoute(builder: (_) => RedeemPage());
+        return MaterialPageRoute(builder: (context) => RedeemPage());
+      case '/rewardConfirm':
+        var args = settings.arguments;
+        return MaterialPageRoute(
+          builder: (context) => RedeemConfirmationPage(
+            args: args,
+          ),
+        );
       default:
         return _errorRoute();
     }
   }
 
   static Route<dynamic> _errorRoute() {
-    return MaterialPageRoute(builder: (_) => ErrorRoutePage());
+    return MaterialPageRoute(builder: (context) => ErrorRoutePage());
   }
 }

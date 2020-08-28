@@ -1,9 +1,11 @@
-import 'package:bank_sampah_mobile/bloc/trash/trash_bloc.dart';
-import 'package:bank_sampah_mobile/repository/trash_repository.dart';
-import 'package:bank_sampah_mobile/screen/widget/circular_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:bank_sampah_mobile/bloc/trash/trash_bloc.dart';
+import 'package:bank_sampah_mobile/repository/trash_repository.dart';
+
+import 'package:bank_sampah_mobile/screen/widget/circular_container.dart';
 
 class SavingDetailPage extends StatefulWidget {
   @override
@@ -69,21 +71,36 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
                                 if (state is TrashInitial) {
                                   context.bloc<TrashBloc>().add(GetTrash());
                                   return Text('Tidak ada');
-                                }
-                                if (state is TrashIsLoaded) {
-                                  return ListView.builder(
-                                    itemCount: state.trash.results.length,
-                                    itemBuilder: (context, index) {
-                                      final data = state.trash.results[index];
-                                      return _transactionDetailContainer(
-                                          data.timestamp,
-                                          data.name,
-                                          data.poin.toString());
-                                    },
-                                  );
                                 } else if (state is TrashIsLoading) {
                                   return Center(
-                                    child: CircularContainer(),
+                                    child: CircularContainer(
+                                      title: 'Memuat',
+                                    ),
+                                  );
+                                } else if (state is TrashIsLoaded) {
+                                  final data = state.trash.results;
+
+                                  if (data.isEmpty) {
+                                    return Center(
+                                      child: Text(
+                                        'Belum Ada Transaksi',
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w300,
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  return ListView.builder(
+                                    itemCount: data.length,
+                                    itemBuilder: (context, index) {
+                                      return _transactionDetailContainer(
+                                        data[index].timestamp,
+                                        data[index].name,
+                                        data[index].poin.toString(),
+                                      );
+                                    },
                                   );
                                 }
 
@@ -199,46 +216,51 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
 
   Widget _transactionDetailContainer(
       String timestamp, String name, String poin) {
-    return Container(
+    return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: 20.0,
-        vertical: 20.0,
+        vertical: 10.0,
       ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        color: Colors.grey[200],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$timestamp',
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w300,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 20.0,
+          vertical: 20.0,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          color: Colors.grey[200],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$timestamp',
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w300,
+                    ),
                   ),
-                ),
-                Text(
-                  '$name',
-                  style: TextStyle(
-                    fontSize: 16.0,
+                  Text(
+                    '$name',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Text(
-            '$poin',
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
+            Text(
+              '$poin',
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -253,18 +275,3 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
     );
   }
 }
-
-// Container(
-//               child: Column(
-//                 children: [
-//                   SizedBox(
-//                     height: 10.0,
-//                   ),
-//                   _transactionDetailContainer(),
-//                   SizedBox(
-//                     height: 10.0,
-//                   ),
-//                   _transactionDetailContainer(),
-//                 ],
-//               ),
-//             ),

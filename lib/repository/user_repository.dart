@@ -55,11 +55,19 @@ class UserRepository {
     return User.fromJson(json.decode(response.body.toString()));
   }
 
-  // Parsing Response to Json
-  // User parsedJson(final response) {
-  //   final jsonDecoded = json.decode(response);
-  //   final jsonUser = jsonDecoded['data'];
+  // Get User by Id
+  Future<User> postUserId(String userId) async {
+    final response = await http.Client().post(
+      uri + 'user/' + userId,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    );
 
-  //   return User.fromJson(jsonUser);
-  // }
+    if (response.statusCode != 200) {
+      throw Exception();
+    }
+
+    return User.fromJson(json.decode(response.body));
+  }
 }

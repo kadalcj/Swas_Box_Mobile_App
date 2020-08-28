@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:bank_sampah_mobile/repository/user_repository.dart';
+import 'package:bank_sampah_mobile/bloc/refresh_poin/refresh_poin_bloc.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -8,6 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String _userId;
   String _firstName;
   int _poin;
 
@@ -15,6 +20,7 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
     setState(() {
+      this._userId = _prefs.getString('_id');
       this._firstName = _prefs.getString('firstName');
       this._poin = _prefs.getInt('poin');
     });
@@ -31,28 +37,64 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.only(
-              top: 20.0,
-              left: 20.0,
-              right: 20.0,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _welcomeContainer(_firstName),
-                _poinContainer(
-                  context,
-                  _poin.toString(),
-                ),
-                _allertCovContainer()
-              ],
-            ),
+      body: BlocProvider<RefreshPoinBloc>(
+        create: (context) => RefreshPoinBloc(UserRepository()),
+        child: SafeArea(
+          child: BlocConsumer<RefreshPoinBloc, RefreshPoinState>(
+            listener: (context, state) {
+              if (state is RefreshPoinIsLoaded) {
+                return _initPrefs();
+              } else if (state is RefreshPoinIsError) {
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                  ),
+                );
+              }
+            },
+            builder: (context, state) {
+              if (state is RefreshPoinInitial) {
+                return _initPage(context);
+              } else if (state is RefreshPoinIsLoading) {
+              } else if (state is RefreshPoinIsLoaded) {
+                return _initPage(context);
+              }
+
+              return _initPage(context);
+            },
           ),
         ),
       ),
+    );
+  }
+
+  Widget _initPage(BuildContext context) {
+    return RefreshIndicator(
+      child: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 20.0,
+            left: 20.0,
+            right: 20.0,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _welcomeContainer(_firstName),
+              _poinContainer(
+                context,
+                _poin.toString(),
+              ),
+              _allertCovContainer()
+            ],
+          ),
+        ),
+      ),
+      onRefresh: () async {
+        context.bloc<RefreshPoinBloc>().add(
+              RefreshPoin(_userId),
+            );
+      },
     );
   }
 

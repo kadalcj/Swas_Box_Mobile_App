@@ -24,8 +24,8 @@ class TrashBloc extends Bloc<TrashEvent, TrashState> {
         final trash = await _trashRepository.getTrash();
 
         yield TrashIsLoaded(trash);
-      } catch (_) {
-        yield TrashIsError('Something is Wrong');
+      } catch (err) {
+        yield TrashIsError(err.toString());
       }
     }
   }

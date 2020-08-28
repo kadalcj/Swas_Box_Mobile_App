@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LandingPage extends StatelessWidget {
-  void _delSharedPrefs() async {
+class LandingPage extends StatefulWidget {
+  @override
+  _LandingPageState createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+  String _id;
+  
+  Future _initPrefs() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
-    _prefs.remove('_id');
-    _prefs.remove('firstName');
-    _prefs.remove('poin');
+    setState(() {
+      this._id = _prefs.getString('_id');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _initPrefs();
   }
 
   @override
@@ -88,8 +102,10 @@ class LandingPage extends StatelessWidget {
               ),
             ),
             onTap: () {
-              _delSharedPrefs();
-              Navigator.pushNamed(context, '/login');
+              if (_id == null) 
+                Navigator.pushNamed(context, '/login');
+              else
+                Navigator.pushNamed(context, '/home');
             },
           ),
         ],
