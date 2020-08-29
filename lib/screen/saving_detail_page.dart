@@ -92,14 +92,21 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
                                     );
                                   }
 
-                                  return ListView.builder(
-                                    itemCount: data.length,
-                                    itemBuilder: (context, index) {
-                                      return _transactionDetailContainer(
-                                        data[index].timestamp,
-                                        data[index].name,
-                                        data[index].poin.toString(),
-                                      );
+                                  return RefreshIndicator(
+                                    child: ListView.builder(
+                                      itemCount: data.length,
+                                      itemBuilder: (context, index) {
+                                        return _transactionDetailContainer(
+                                          data[index].timestamp,
+                                          data[index].name,
+                                          data[index].poin.toString(),
+                                        );
+                                      },
+                                    ),
+                                    onRefresh: () async {
+                                      context.bloc<TrashBloc>().add(GetTrash());
+
+                                      return _initPrefs();
                                     },
                                   );
                                 }
@@ -202,8 +209,12 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
                       color: Colors.green,
                     ),
                   ),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/redeem');
+                  onTap: () async {
+                    Navigator.pushNamed(context, '/redeem').then(
+                      (_) {
+                        return _initPrefs();
+                      },
+                    );
                   },
                 )
               ],

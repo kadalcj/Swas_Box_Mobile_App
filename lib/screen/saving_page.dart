@@ -12,29 +12,33 @@ class _SavingPageState extends State<SavingPage> {
   var qrCodeText = '';
   QRViewController qrViewController;
 
+  // Context
+  BuildContext _ctx;
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Container(
-          child: Column(
-            children: [
-              _scannerContainer(),
-              _actionContainer(),
-            ],
-          ),
-        ),
+    _ctx = context;
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: _initPage(context),
       ),
     );
   }
 
-  Widget _scannerContainer() {
-    // return Expanded(
-    //   child: Container(
-    //     color: Colors.green,
-    //   ),
-    // );
+  Widget _initPage(BuildContext context) {
+    return Container(
+      child: Column(
+        children: [
+          _scannerContainer(context),
+          _actionContainer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _scannerContainer(BuildContext context) {
     return Expanded(
       child: QRView(
         key: qrKey,
@@ -53,9 +57,21 @@ class _SavingPageState extends State<SavingPage> {
 
             qrViewController.pauseCamera();
 
-            showDialog(
-              context: context,
-              child: _processSavingContainer(),
+            Navigator.pushNamed(_ctx, '/savingConfirm', arguments: qrCodeText)
+                .then(
+              (value) {
+                // if (value == null) value = false;
+
+                if (value) {
+                //   Scaffold.of(context).showSnackBar(
+                //     SnackBar(
+                //       content: Text('Terjadi Kesalahan'),
+                //     ),
+                //   );
+                
+                  qrViewController.resumeCamera();
+                }
+              },
             );
           },
         );
@@ -116,95 +132,10 @@ class _SavingPageState extends State<SavingPage> {
     );
   }
 
-  Widget _processSavingContainer() {
-    return AlertDialog(
-      content: Container(
-        width: double.infinity,
-        child: Wrap(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                top: 5.0,
-              ),
-              child: Text(
-                'Selanjutnya...',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 10.0,
-              ),
-              child: Text(
-                'Letakkan botol atau kaleng pada mesin sesuai dengan tempat yang sudah ditandai atau seperti pada gambar dibawah ini.',
-                style: TextStyle(
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.w300,
-                ),
-                textAlign: TextAlign.justify,
-              ),
-            ),
-            Container(
-              height: 300.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-                color: Colors.green,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              child: Text(
-                "Jika sudah, silahkan tekan tombol dibawah untuk melanjutkan proses menabung.",
-                style: TextStyle(
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.w300,
-                ),
-                textAlign: TextAlign.justify,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: 10.0,
-              ),
-              child: InkWell(
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 10.0,
-                  ),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    color: Colors.green,
-                  ),
-                  child: Text(
-                    'Lanjut',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                onTap: () {
-                  qrViewController.resumeCamera();
-
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   void dispose() {
     qrViewController?.dispose();
+
     super.dispose();
   }
 }

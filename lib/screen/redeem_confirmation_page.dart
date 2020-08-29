@@ -1,10 +1,11 @@
-import 'package:bank_sampah_mobile/model/argument/reward_args.dart';
-import 'package:bank_sampah_mobile/screen/widget/circular_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:bank_sampah_mobile/bloc/invoice/invoice_bloc.dart';
 import 'package:bank_sampah_mobile/repository/reward_repository.dart';
+import 'package:bank_sampah_mobile/model/argument/reward_args.dart';
+
+import 'package:bank_sampah_mobile/screen/widget/circular_container.dart';
 
 class RedeemConfirmationPage extends StatefulWidget {
   final RewardArgs args;
@@ -23,7 +24,7 @@ class _RedeemConfirmationPageState extends State<RedeemConfirmationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<InvoiceBloc>(
       create: (context) => InvoiceBloc(RewardRepository()),
       child: Scaffold(
         body: SafeArea(
@@ -39,17 +40,14 @@ class _RedeemConfirmationPageState extends State<RedeemConfirmationPage> {
               }
             },
             builder: (context, state) {
-              if (state is InvoiceInitial) {
-              } else if (state is InvoiceisLoading) {
+              if (state is InvoiceisLoading) {
                 return Center(
                   child: CircularContainer(
                     title: 'Mohon Tunggu',
                   ),
                 );
               } else if (state is InvoiceIsLoaded) {
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text('Success'),
-                ));
+                Navigator.pop(context, true);
               }
 
               return _initialPage(context);
@@ -176,7 +174,7 @@ class _RedeemConfirmationPageState extends State<RedeemConfirmationPage> {
             ),
             onTap: () {
               setState(() {
-                if ((args.poin / args.reqPoin).round() > totalItem) totalItem++;
+                if (((args.poin / args.reqPoin).floor()) > totalItem) totalItem++;
               });
             },
           ),
@@ -211,7 +209,7 @@ class _RedeemConfirmationPageState extends State<RedeemConfirmationPage> {
       ),
       onTap: () {
         print(args.poin / args.reqPoin);
-        
+
         if ((args.poin / args.reqPoin).round() <= totalItem) {
           context.bloc<InvoiceBloc>().add(
                 PostInvoice(

@@ -1,12 +1,12 @@
-import 'package:bank_sampah_mobile/model/argument/reward_args.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:bank_sampah_mobile/bloc/reward/reward_bloc.dart';
 import 'package:bank_sampah_mobile/repository/reward_repository.dart';
+import 'package:bank_sampah_mobile/model/argument/reward_args.dart';
 
 import 'package:bank_sampah_mobile/screen/widget/circular_container.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RedeemPage extends StatefulWidget {
   @override
@@ -94,16 +94,23 @@ class _RedeemPageState extends State<RedeemPage> {
                           );
                         }
 
-                        return ListView.builder(
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            return _productContainer(
-                              context,
-                              data[index].id,
-                              data[index].name,
-                              data[index].reqPoin,
-                              data[index].stock,
-                            );
+                        return RefreshIndicator(
+                          child: ListView.builder(
+                            itemCount: data.length,
+                            itemBuilder: (context, index) {
+                              return _productContainer(
+                                context,
+                                data[index].id,
+                                data[index].name,
+                                data[index].reqPoin,
+                                data[index].stock,
+                              );
+                            },
+                          ),
+                          onRefresh: () async {
+                            context.bloc<RewardBloc>().add(GetReward());
+
+                            return _initPrefs();
                           },
                         );
                       }
@@ -269,6 +276,21 @@ class _RedeemPageState extends State<RedeemPage> {
                     reqPoin,
                     stock,
                   ),
+                ).then(
+                  (value) {
+                    if (value == null) value = false;
+
+                    if (value) {
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Berhasil Menukarkan'),
+                        ),
+                      );
+
+                      _initPrefs();
+                      context.bloc<RewardBloc>().add(GetReward());
+                    }
+                  },
                 );
               },
             ),

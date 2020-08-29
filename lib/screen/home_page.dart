@@ -238,7 +238,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             onTap: () async {
-              Navigator.pushNamed(context, '/saving');
+              Navigator.pushNamed(context, '/saving').then((_) {
+                return _initPrefs();
+              });
             },
           ),
         ],

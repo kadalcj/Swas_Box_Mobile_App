@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:bank_sampah_mobile/model/user.dart';
 import 'package:bank_sampah_mobile/repository/reward_repository.dart';
@@ -25,10 +26,13 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
         final user = await _rewardRepository.postInvoice(
             event._userId, event._rewardId, event._totalItem);
 
+        SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+        _prefs.setInt('poin', user.results.poin);
+
         yield InvoiceIsLoaded(user);
       } catch (err) {
-        print(err);
-        yield InvoiceIsError(err.toString());
+        yield InvoiceIsError(err);
       }
     }
   }

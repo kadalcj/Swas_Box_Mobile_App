@@ -1,5 +1,6 @@
 import 'package:bank_sampah_mobile/screen/redeem_confirmation_page.dart';
 import 'package:bank_sampah_mobile/screen/redeem_page.dart';
+import 'package:bank_sampah_mobile/screen/saving_confirmation_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bank_sampah_mobile/screen/landing_page.dart';
@@ -31,6 +32,13 @@ class RouteGenerator {
         var args = settings.arguments;
         return MaterialPageRoute(
           builder: (context) => RedeemConfirmationPage(
+            args: args,
+          ),
+        );
+      case '/savingConfirm':
+        var args = settings.arguments;
+        return MaterialPageRoute(
+          builder: (context) => SavingConfirmationPage(
             args: args,
           ),
         );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:bank_sampah_mobile/config/router/route_generator.dart';
-import 'package:flutter/services.dart';
 
 void main() {
   runApp(App());
