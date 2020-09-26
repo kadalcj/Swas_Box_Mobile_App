@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:bank_sampah_mobile/repository/user_repository.dart';
@@ -12,6 +13,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  DateTime currentBackPressTime;
+
   String _userId;
   String _firstName;
   int _poin;
@@ -37,33 +40,36 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: BlocProvider<RefreshPoinBloc>(
-        create: (context) => RefreshPoinBloc(UserRepository()),
-        child: SafeArea(
-          child: BlocConsumer<RefreshPoinBloc, RefreshPoinState>(
-            listener: (context, state) {
-              if (state is RefreshPoinIsLoaded) {
-                return _initPrefs();
-              } else if (state is RefreshPoinIsError) {
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                  ),
-                );
-              }
-            },
-            builder: (context, state) {
-              if (state is RefreshPoinInitial) {
-                return _initPage(context);
-              } else if (state is RefreshPoinIsLoading) {
-              } else if (state is RefreshPoinIsLoaded) {
-                return _initPage(context);
-              }
+      body: WillPopScope(
+        child: BlocProvider<RefreshPoinBloc>(
+          create: (context) => RefreshPoinBloc(UserRepository()),
+          child: SafeArea(
+            child: BlocConsumer<RefreshPoinBloc, RefreshPoinState>(
+              listener: (context, state) {
+                if (state is RefreshPoinIsLoaded) {
+                  return _initPrefs();
+                } else if (state is RefreshPoinIsError) {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                if (state is RefreshPoinInitial) {
+                  return _initPage(context);
+                } else if (state is RefreshPoinIsLoading) {
+                } else if (state is RefreshPoinIsLoaded) {
+                  return _initPage(context);
+                }
 
-              return _initPage(context);
-            },
+                return _initPage(context);
+              },
+            ),
           ),
         ),
+        onWillPop: onWillPop,
       ),
     );
   }
@@ -100,32 +106,46 @@ class _HomePageState extends State<HomePage> {
 
   Widget _welcomeContainer(String firstName) {
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          SizedBox(
-            height: 10.0,
-          ),
-          Text(
-            'Ayo Mulai Menabung,',
-            style: TextStyle(
-              fontSize: 19.0,
-              fontWeight: FontWeight.w300,
+          Expanded(
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    'Ayo Mulai Menabung,',
+                    style: TextStyle(
+                      fontSize: 19.0,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 4.0,
+                  ),
+                  Text(
+                    '$firstName',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                ],
+              ),
             ),
           ),
-          SizedBox(
-            height: 4.0,
-          ),
-          Text(
-            '$firstName',
-            style: TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(
-            height: 15.0,
-          ),
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () async {
+              await _logOutDialog();
+            },
+          )
         ],
       ),
     );
@@ -310,10 +330,11 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                   width: double.infinity,
-                  height: 200.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    color: Colors.green,
+                  height: 300.0,
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/mask.svg',
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -331,10 +352,11 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                   width: double.infinity,
-                  height: 200.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    color: Colors.green,
+                  height: 300.0,
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/wash_hand.svg',
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -352,10 +374,11 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                   width: double.infinity,
-                  height: 200.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    color: Colors.green,
+                  height: 300.0,
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/social_distance.svg',
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -376,5 +399,78 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  Future<void> _logOutDialog() async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Keluar dari Swa's Box",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                Text('Apakah Anda ingin keluar?'),
+              ],
+            ),
+          ),
+          actions: [
+            FlatButton(
+              child: Text(
+                'Tidak',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
+              child: Text(
+                'Ya',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onPressed: () async {
+                // Clear all sharedPreferences
+                SharedPreferences _prfes =
+                    await SharedPreferences.getInstance();
+                await _prfes.clear();
+
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/login',
+                  ModalRoute.withName('/'),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool> onWillPop() {
+    DateTime now = DateTime.now();
+
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+
+      Fluttertoast.showToast(msg: 'Tekan sekali lagi untuk keluar');
+
+      return Future.value(false);
+    }
+
+    return Future.value(true);
   }
 }

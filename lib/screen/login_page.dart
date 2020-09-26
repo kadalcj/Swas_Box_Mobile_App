@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:bank_sampah_mobile/bloc/login/login_bloc.dart';
 import 'package:bank_sampah_mobile/repository/user_repository.dart';
@@ -18,6 +19,8 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  DateTime currentBackPressTime;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -30,44 +33,47 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: BlocProvider(
-          create: (context) => LoginBloc(UserRepository()),
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20.0,
-                  vertical: 10.0,
-                ),
-                child: BlocConsumer<LoginBloc, LoginState>(
-                  listener: (context, state) {
-                    if (state is LoginIsLoaded) {
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        '/home',
-                        ModalRoute.withName('/'),
-                      );
-                    } else if (state is LoginError) {
-                      Scaffold.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(state.message),
-                        ),
-                      );
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is LoginInitial) {
-                      return _initialPage(context);
-                    } else if (state is LoginIsLoading) {
-                      return CircularContainer(title: 'Mohon Tunggu');
-                    }
+        body: WillPopScope(
+          child: BlocProvider<LoginBloc>(
+            create: (context) => LoginBloc(UserRepository()),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 10.0,
+                  ),
+                  child: BlocConsumer<LoginBloc, LoginState>(
+                    listener: (context, state) {
+                      if (state is LoginIsLoaded) {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/home',
+                          ModalRoute.withName('/'),
+                        );
+                      } else if (state is LoginError) {
+                        Scaffold.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.message),
+                          ),
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is LoginInitial) {
+                        return _initialPage(context);
+                      } else if (state is LoginIsLoading) {
+                        return CircularContainer(title: 'Mohon Tunggu');
+                      }
 
-                    return _initialPage(context);
-                  },
+                      return _initialPage(context);
+                    },
+                  ),
                 ),
               ),
             ),
           ),
+          onWillPop: onWillPop,
         ),
       ),
     );
@@ -238,6 +244,21 @@ class _LoginPageState extends State<LoginPage> {
       return false;
     else
       return true;
+  }
+
+  Future<bool> onWillPop() {
+    DateTime now = DateTime.now();
+
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+
+      Fluttertoast.showToast(msg: 'Tekan sekali lagi untuk keluar');
+
+      return Future.value(false);
+    }
+
+    return Future.value(true);
   }
 
   @override

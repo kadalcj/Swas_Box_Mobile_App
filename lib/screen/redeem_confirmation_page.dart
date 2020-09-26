@@ -37,6 +37,8 @@ class _RedeemConfirmationPageState extends State<RedeemConfirmationPage> {
                 Scaffold.of(context).showSnackBar(SnackBar(
                   content: Text(state.message),
                 ));
+              } else if (state is InvoiceIsLoaded) {
+                Navigator.pop(context, true);
               }
             },
             builder: (context, state) {
@@ -46,8 +48,6 @@ class _RedeemConfirmationPageState extends State<RedeemConfirmationPage> {
                     title: 'Mohon Tunggu',
                   ),
                 );
-              } else if (state is InvoiceIsLoaded) {
-                Navigator.pop(context, true);
               }
 
               return _initialPage(context);
@@ -174,7 +174,8 @@ class _RedeemConfirmationPageState extends State<RedeemConfirmationPage> {
             ),
             onTap: () {
               setState(() {
-                if (((args.poin / args.reqPoin).floor()) > totalItem) totalItem++;
+                if (((args.poin / args.reqPoin).floor()) > totalItem)
+                  totalItem++;
               });
             },
           ),
@@ -208,9 +209,7 @@ class _RedeemConfirmationPageState extends State<RedeemConfirmationPage> {
         ),
       ),
       onTap: () {
-        print(args.poin / args.reqPoin);
-
-        if ((args.poin / args.reqPoin).round() <= totalItem) {
+        if ((args.poin / args.reqPoin).round() >= totalItem) {
           context.bloc<InvoiceBloc>().add(
                 PostInvoice(
                   args.userId,

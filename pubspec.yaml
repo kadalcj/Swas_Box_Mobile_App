@@ -41,6 +41,8 @@ dependencies:
 
   qr_code_scanner: ^0.0.13
 
+  fluttertoast: ^7.1.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

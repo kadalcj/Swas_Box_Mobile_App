@@ -45,6 +45,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: BlocConsumer<RegisterBloc, RegisterState>(
                   listener: (context, state) {
                     if (state is RegisterIsLoaded) {
+                      _firstNameController.clear();
+                      _lastNameController.clear();
+                      _contactController.clear();
+                      _emailController.clear();
+                      _passwordController.clear();
+
                       Scaffold.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Akun Berhasil Terdaftar'),
@@ -106,6 +112,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Data Ini Tidak Boleh Kosong';
+                  } else if (value.length < 4) {
+                    return 'Nama Belakang Minimal 4 Karakter';
                   }
 
                   return null;
@@ -126,6 +134,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Data Ini Tidak Boleh Kosong';
+                  } else if (value.length < 4) {
+                    return 'Nama Belakang Minimal 4 Karakter';
                   }
 
                   return null;
@@ -147,6 +157,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Data Ini Tidak Boleh Kosong';
+                  } else if (value.length < 10 && value.length > 13) {
+                    return 'Panjang Nomor Handphone Minimal 10 dan Maksimal 13 Digit';
                   }
 
                   return null;
@@ -190,6 +202,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Data Ini Tidak Boleh Kosong';
+                  } else if (value.length < 6) {
+                    return 'Password Minimal 6 Karakter';
                   }
 
                   return null;
@@ -307,7 +321,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _contactController?.dispose();
     _emailController?.dispose();
     _passwordController?.dispose();
-    
+
     super.dispose();
   }
 }

@@ -9,8 +9,8 @@
          <uses-permission android:name="android.permission.CAMERA"/>
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="bank_sampah_mobile"
-        android:icon="@mipmap/ic_launcher"
+        android:label="Swa's Box App"
+        android:icon="@drawable/ic_launcher"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"

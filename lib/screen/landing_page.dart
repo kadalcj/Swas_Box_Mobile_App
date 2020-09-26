@@ -8,7 +8,7 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   String _id;
-  
+
   Future _initPrefs() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
@@ -34,6 +34,19 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            Expanded(
+              child: Container(
+                child: Center(
+                  child: Image(
+                    image: AssetImage(
+                      'assets/app_logo.png',
+                    ),
+                    height: 350,
+                    width: 350,
+                  ),
+                ),
+              ),
+            ),
             _titleContainer(context),
           ],
         ),
@@ -102,10 +115,14 @@ class _LandingPageState extends State<LandingPage> {
               ),
             ),
             onTap: () {
-              if (_id == null) 
+              if (_id == null)
                 Navigator.pushNamed(context, '/login');
               else
-                Navigator.pushNamed(context, '/home');
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/home',
+                  ModalRoute.withName('/'),
+                );
             },
           ),
         ],

@@ -8,7 +8,7 @@ class MeasureRepository {
 
   // Let Rasp get the BG
   Future takeBackground(String uri) async {
-    final response = await http.Client().get(uri + 'takeBg');
+    final response = await http.Client().get(uri + '/take-bg');
 
     if (response.statusCode != 200) {
       throw Exception();
@@ -19,7 +19,7 @@ class MeasureRepository {
 
   // Measure Object
   Future<Measure> getMeasure(String uri) async {
-    final response = await http.get(uri + 'measure-object');
+    final response = await http.get(uri + '/measure-size');
 
     if (response.statusCode != 200) {
       throw Exception();

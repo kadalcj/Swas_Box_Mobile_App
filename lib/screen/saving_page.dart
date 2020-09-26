@@ -1,4 +1,8 @@
+import 'package:bank_sampah_mobile/bloc/take_bg/take_bg_bloc.dart';
+import 'package:bank_sampah_mobile/repository/measure_repository.dart';
+import 'package:bank_sampah_mobile/screen/widget/circular_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -13,21 +17,53 @@ class _SavingPageState extends State<SavingPage> {
   QRViewController qrViewController;
 
   // Context
-  BuildContext _ctx;
+  BuildContext _context;
 
   @override
   Widget build(BuildContext context) {
-    _ctx = context;
-
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: _initPage(context),
+      body: BlocProvider<TakeBgBloc>(
+        create: (context) => TakeBgBloc(MeasureRepository()),
+        child: SafeArea(
+          child: BlocConsumer<TakeBgBloc, TakeBgState>(
+            listener: (context, state) {
+              if (state is TakeBgIsLoaded) {
+                Navigator.pushNamed(context, '/savingConfirm',
+                    arguments: qrCodeText);
+              } else if (state is TakeBgIsError) {
+                // DEV
+                print(state.message);
+
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Terjadi Kesalahan'),
+                  ),
+                );
+              }
+            },
+            builder: (context, state) {
+              if (state is TakeBgInitial) {
+                return _initPage(context);
+              } else if (state is TakeBgIsLoading) {
+                return Center(
+                  child: CircularContainer(
+                    title: 'Memproses',
+                  ),
+                );
+              }
+
+              return _initPage(context);
+            },
+          ),
+        ),
       ),
     );
   }
 
   Widget _initPage(BuildContext context) {
+    _context = context;
+
     return Container(
       child: Column(
         children: [
@@ -57,22 +93,7 @@ class _SavingPageState extends State<SavingPage> {
 
             qrViewController.pauseCamera();
 
-            Navigator.pushNamed(_ctx, '/savingConfirm', arguments: qrCodeText)
-                .then(
-              (value) {
-                // if (value == null) value = false;
-
-                if (value) {
-                //   Scaffold.of(context).showSnackBar(
-                //     SnackBar(
-                //       content: Text('Terjadi Kesalahan'),
-                //     ),
-                //   );
-                
-                  qrViewController.resumeCamera();
-                }
-              },
-            );
+            _context.bloc<TakeBgBloc>().add(TakeBg(qrCodeText));
           },
         );
       },

@@ -63,9 +63,8 @@ class _SavingConfirmationPageState extends State<SavingConfirmationPage> {
                   _setPushData(data);
 
                   // Push Data
-                  context
-                      .bloc<MeasureBloc>()
-                      .add(PostMeasure(userId, isCan.toString(), poin.toString(), trashName));
+                  context.bloc<MeasureBloc>().add(PostMeasure(
+                      userId, isCan.toString(), poin.toString(), trashName));
                 } else if (state is MeasureIsPostLoaded) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
@@ -131,11 +130,11 @@ class _SavingConfirmationPageState extends State<SavingConfirmationPage> {
           Container(
             width: double.infinity,
             height: 300.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8.0),
+            child: Image(
+              image: AssetImage(
+                'assets/instruction_image.jpeg',
               ),
-              color: Colors.green,
+              fit: BoxFit.fitWidth,
             ),
           ),
           SizedBox(
@@ -230,7 +229,7 @@ class _SavingConfirmationPageState extends State<SavingConfirmationPage> {
 
   void _setPushData(Measure measure) {
     bool isCan = measure.results.isCan;
-    double height = measure.results.height;
+    double height = measure.results.height.toDouble();
 
     // Check if is it can or not
     if (isCan) {
@@ -243,13 +242,13 @@ class _SavingConfirmationPageState extends State<SavingConfirmationPage> {
       /// Botol Kecil ?? (Belum Tahu). Anggap Saja 14.5cm, Jika dibawah 17.0cm Maka Botol Kecil
       /// Botol Sedang 22.7cm, Jika Diantara 17.0cm dan 28.0cm Maka Botol Sedang
       /// Botol Besar 31.5cm, Jika diatas 28.0cm Maka Botol Besar
-      if (height < 17.0) {
+      if (height < 18.0) {
         setState(() {
           this.isCan = false;
           this.poin = 1;
           this.trashName = 'Botol Kecil';
         });
-      } else if (height > 17.0 && height < 28.0) {
+      } else if (height > 18.0 && height < 26.0) {
         setState(() {
           this.isCan = false;
           this.poin = 2;
