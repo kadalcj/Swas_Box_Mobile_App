@@ -1,5 +1,5 @@
 # Swa's Box Mobile
-An app to support the transaction process of IoT Bassed Trash Bank that I build  
+An app to support the transaction process of IoT Based Trash Bank that I build  
 
 ![swas-box-logo](https://github.com/kadalcj/bank-sampah-mobile/blob/master/assets/app_logo.png)
 
